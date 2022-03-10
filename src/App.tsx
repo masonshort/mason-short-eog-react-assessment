@@ -6,7 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import 'react-toastify/dist/ReactToastify.css';
 import Header from './components/Header';
 import Wrapper from './components/Wrapper';
-import { GetMetrics } from './components/Metrics';
+import { MetricsContainer } from './MetricsContainer';
 
 const theme = createTheme({
   palette: {
@@ -30,7 +30,6 @@ const GET_HEARTBEAT = gql`
 
 export function App() {
   const { loading, error, data } = useQuery(GET_HEARTBEAT);
-  console.log(data);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -40,7 +39,7 @@ export function App() {
       <CssBaseline />
       <Wrapper>
         <Header />
-        <GetMetrics heartbeat={data.heartBeat} />
+        <MetricsContainer heartbeat={data.heartBeat} />
         <ToastContainer />
       </Wrapper>
     </MuiThemeProvider>
