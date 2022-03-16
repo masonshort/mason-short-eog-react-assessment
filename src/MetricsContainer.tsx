@@ -1,12 +1,9 @@
 import React from 'react';
 import { gql, useQuery } from '@apollo/client';
 import {
-  FormControl,
-  MenuItem,
-  InputLabel,
-  Select,
-  SelectChangeEvent,
+  FormControl, MenuItem, InputLabel, Select, SelectChangeEvent, Grid,
 } from '@mui/material';
+import { ImageList } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Chart } from './components/Chart';
 import { MetricCard } from './components/MetricCard';
@@ -25,9 +22,15 @@ const useStyles = makeStyles({
     backgroundColor: 'rgb(226,231,238)',
     margin: '10',
   },
-  form: {
-    maxHeight: '20%',
-    maxWidth: '25%',
+  cardRow: {
+    width: '150%',
+    height: '100%',
+    float: 'left',
+    marginRight: 10,
+    flexFlow: 'row',
+    flexWrap: 'nowrap',
+    overflow: 'inherit',
+    paddingBottom: 0,
   },
 });
 
@@ -38,29 +41,47 @@ interface Props {
 export function MetricsContainer({ heartbeat }: Props) {
   const classes = useStyles();
   const { loading, error, data } = useQuery(GET_METRICS);
-  const [selected, setSelected] = React.useState<string>('');
+  const [multiSelect, setMultiSelect] = React.useState<string[]>([]);
 
-  const handleChange = ({ target }: SelectChangeEvent<string>) => setSelected(target.value);
+  const handleMultiChange = (event: SelectChangeEvent<string[]>) => {
+    // eslint-disable-next-line implicit-arrow-linebreak
+    const {
+      target: { value },
+    } = event;
+    setMultiSelect(typeof value === 'string' ? value.split(', ') : value);
+  };
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (error) return <p>Error Loading Page</p>;
 
   return (
     <div>
-      <FormControl sx={{ m: 3, width: 300 }}>
+      <FormControl sx={{ m: 3, width: 300, height: 150 }}>
         <InputLabel className={classes.label} id="metric-label-id">
           Metric
         </InputLabel>
-        <Select className={classes.input} labelId="metric-label-id" value={selected} onChange={handleChange}>
+        <Select
+          className={classes.input}
+          multiple
+          value={multiSelect}
+          labelId="metric-label-id"
+          onChange={handleMultiChange}
+        >
           {data.getMetrics.map((entry: string) => (
             <MenuItem key={entry} value={entry}>
               {entry}
             </MenuItem>
           ))}
         </Select>
-        {selected !== '' ? <MetricCard selected={selected} /> : null}
+        <ImageList className={classes.cardRow}>
+          {multiSelect.map((entry) => (
+            <Grid item key={entry}>
+              <MetricCard selected={entry} />
+            </Grid>
+          ))}
+        </ImageList>
       </FormControl>
-      {selected !== '' ? <Chart selected={selected} heartbeat={heartbeat} /> : null}
+      {multiSelect?.length !== 0 ? <Chart selected={multiSelect} heartbeat={heartbeat} /> : null}
     </div>
   );
 }

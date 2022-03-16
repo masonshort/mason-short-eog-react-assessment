@@ -1,15 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {
-  ApolloClient,
-  InMemoryCache,
-  HttpLink,
-  ApolloProvider,
-} from '@apollo/client';
+// eslint-disable-next-line object-curly-newline
+import { ApolloClient, InMemoryCache, HttpLink, ApolloProvider } from '@apollo/client';
 import { App } from './App';
 
 const httpLink = new HttpLink({
-  uri: 'https://react.eogresources.com/graphql',
+  uri: 'https://react-assessment.herokuapp.com/graphql',
 });
 
 const client = new ApolloClient({

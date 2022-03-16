@@ -24,6 +24,8 @@ const useStyles = makeStyles({
   card: {
     margin: '5% 0% 0% 0%',
     width: 200,
+    height: 100,
+    paddingBottom: 0,
   },
 });
 
